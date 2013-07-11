@@ -13,6 +13,7 @@ user node.redis.user
   directory node.redis[dir] do
     owner node.redis.user
     group node.redis.group
+    recursive true
     action :create
   end
 end

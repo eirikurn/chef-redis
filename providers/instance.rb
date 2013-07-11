@@ -135,6 +135,21 @@ def create_service_script
       mode 00755
       variables new_resource.to_hash
     end
+  when "smf"
+    xml_file = "/var/svc/manifest/application/redis-#{new_resource.name}.xml"
+
+    execute "import-smf-manifest" do
+      command "svccfg import #{xml_file}"
+      action :nothing
+    end
+    template xml_file do
+      source "redis.xml.erb"
+      owner "root"
+      group "root"
+      mode 00755
+      variables new_resource.to_hash
+      notifies :run, "execute[import-smf-manifest]", :immediately
+    end
   when "runit"
     runit_service "redis" do
       options({
@@ -162,6 +177,8 @@ end
 def redis_service
   if node.platform_family == "rhel" && node.redis.install_type == "package"
     "redis"
+  elsif node.platform_family == "smartos"
+    "redis:#{new_resource.name}"
   else
     "redis-#{new_resource.name}"
   end

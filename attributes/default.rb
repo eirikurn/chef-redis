@@ -72,3 +72,9 @@ default.redis.replication.enabled = false
 default.redis.replication.redis_replication_role = 'master' # or slave
 default.redis.replication.tunnel.enabled = false
 default.redis.replication.tunnel.accept_port = 46379
+
+if platform == "smartos"
+  default.redis.src_dir    = "/opt/src/redis"
+  default.redis.conf_dir   = "/opt/local/etc/redis"
+  default.redis.init_style = "smf"
+end
